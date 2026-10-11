@@ -5,6 +5,8 @@ import com.ttsstudio.betterdeathmessages.model.DeathContext;
 import com.ttsstudio.sdk.text.Items;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -77,7 +79,7 @@ public class MessagePicker {
         String rendered = template
             .replace("{player}",     ctx.victim().getName())
             .replace("{killer}",     ctx.playerKiller() != null ? ctx.playerKiller().getName() : "")
-            .replace("{weapon}",     weapon)
+            .replace("{weapon}",     "<bdm_weapon>")
             .replace("{mob}",        mob)
             .replace("{distance}",   String.format(java.util.Locale.ROOT, "%.0f", distance(ctx)))
             .replace("{biome}",      biomeName(ctx.biome()))
@@ -88,7 +90,20 @@ public class MessagePicker {
             .replace("{dimension}",       ctx.dimension())
             .replace("{inventory_value}", String.format(java.util.Locale.ROOT, "%.0f", ctx.inventoryValue()));
 
-        return MM.deserialize(rendered);
+        return MM.deserialize(rendered, Placeholder.component("bdm_weapon", weaponComponent(ctx.weapon(), weapon)));
+    }
+
+    /**
+     * The weapon's own name as it shows on the item, gradient and symbols included. It goes in
+     * as a finished component, never parsed as MiniMessage, so a name typed on an anvil cannot
+     * add tags to a message the whole server sees.
+     */
+    static Component weaponComponent(ItemStack item, String plain) {
+        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+            String legacy = item.getItemMeta().getDisplayName();
+            if (legacy != null && !legacy.isEmpty()) return LegacyComponentSerializer.legacySection().deserialize(legacy);
+        }
+        return Component.text(plain);
     }
 
     /** How far the killer stood (a skeleton's shot), or how far the victim fell. */
@@ -177,7 +192,7 @@ public class MessagePicker {
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
             // An anvil name is typed by the player and ends up in a message sent
             // to the whole server: its tags must stay text.
-            return escapeForMiniMessage(Items.plainName(item.getItemMeta()));
+            return Items.plainName(item.getItemMeta());
         }
         String raw = item.getType().name().replace("_", " ").toLowerCase();
         return Character.toUpperCase(raw.charAt(0)) + raw.substring(1);
