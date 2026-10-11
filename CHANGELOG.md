@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.0] — 2026-10-12
+
+### Changed
+- **`{weapon}` keeps the weapon's own colours.** A named weapon shows in the message as it does on
+  the item, gradient and symbols included. The name goes in as finished text, never read as
+  MiniMessage, so a name typed on an anvil still cannot add tags to a message everyone sees.
+
+### Added
+- **`messages.pvp-unarmed`** (optional): the lines for a killer with an empty hand. With it, `pvp` can
+  be all `{weapon}` lines and every armed kill names the weapon.
+
 ## [1.3.0] — 2026-10-08
 
 ### Added

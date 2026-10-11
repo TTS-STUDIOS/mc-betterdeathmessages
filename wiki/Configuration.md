@@ -56,12 +56,12 @@ Within any template string, the following tokens are replaced before MiniMessage
 
 | Token | Replaced With | Example |
 |-------|---------------|---------|
-| `<player>` | Victim's name | `Steve` |
-| `<killer>` | Player killer's name (empty for non-PvP) | `Alex` |
-| `<weapon>` | Weapon display name, or material in title-case, or `manos` for empty hand | `Diamond sword` / `Excalibur` / `manos` |
-| `<mob>` | Killer mob's type in title-case (mob deaths only) | `Ender dragon` |
-| `<distance>` | Fall distance in blocks (integer) | `47` |
-| `<biome>` | Biome key at the death location | `minecraft:plains` |
+| `{player}` | Victim's name | `Steve` |
+| `{killer}` | Player killer's name (empty for non-PvP) | `Alex` |
+| `{weapon}` | The weapon's own name with its colours and symbols (a gradient stays a gradient), or the material in title-case. A line with `{weapon}` is skipped when the killer's hand is empty | `Diamond sword` / `[⚔] Excalibur [⚔]` |
+| `{mob}` | Killer mob's type in title-case (mob deaths only) | `Ender dragon` |
+| `{distance}` | Fall distance in blocks (integer) | `47` |
+| `{biome}` | Biome key at the death location | `minecraft:plains` |
 
 ---
 
@@ -70,40 +70,43 @@ Within any template string, the following tokens are replaced before MiniMessage
 ```yaml
 messages:
   fall:
-    - "<red><player></red> <gray>descubrió que la gravedad no negocia</gray>"
-    - "<red><player></red> <gray>falló su examen de paracaidismo desde</gray> <yellow><distance></yellow> <gray>bloques</gray>"
+    - "<red>{player}</red> <gray>descubrió que la gravedad no negocia</gray>"
+    - "<red>{player}</red> <gray>falló su examen de paracaidismo desde</gray> <yellow>{distance}</yellow> <gray>bloques</gray>"
   lava:
-    - "<red><player></red> <gray>se convirtió en parte del paisaje volcánico</gray>"
-    - "<red><player></red> <gray>decidió nadar en lava... una sola vez</gray>"
+    - "<red>{player}</red> <gray>se convirtió en parte del paisaje volcánico</gray>"
+    - "<red>{player}</red> <gray>decidió nadar en lava... una sola vez</gray>"
   drown:
-    - "<red><player></red> <gray>recordó tarde que no es un pez</gray>"
-    - "<red><player></red> <gray>olvidó que respirar bajo el agua no es una habilidad humana</gray>"
+    - "<red>{player}</red> <gray>recordó tarde que no es un pez</gray>"
+    - "<red>{player}</red> <gray>olvidó que respirar bajo el agua no es una habilidad humana</gray>"
   void:
-    - "<red><player></red> <gray>exploró la nada eterna</gray>"
-    - "<red><player></red> <gray>se convenció de que el abismo era una piscina</gray>"
+    - "<red>{player}</red> <gray>exploró la nada eterna</gray>"
+    - "<red>{player}</red> <gray>se convenció de que el abismo era una piscina</gray>"
   pvp:
-    - "<red><player></red> <gray>fue derrotado por</gray> <gold><killer></gold> <gray>usando</gray> <aqua><weapon></aqua>"
-    - "<gold><killer></gold> <gray>demostró su superioridad sobre</gray> <red><player></red>"
-    - "<red><player></red> <gray>subestimó el poder de</gray> <gold><killer></gold>"
+    - "<red>{player}</red> <gray>fue derrotado por</gray> <gold>{killer}</gold> <gray>usando</gray> <aqua>{weapon}</aqua>"
+    - "<gold>{killer}</gold> <gray>demostró su superioridad sobre</gray> <red>{player}</red>"
+    - "<red>{player}</red> <gray>subestimó el poder de</gray> <gold>{killer}</gold>"
+  # Optional: lines for a killer with an empty hand. With it, pvp can be all {weapon} lines.
+  pvp-unarmed:
+    - "<red>{player}</red> <gray>fue asesinado por</gray> <gold>{killer}</gold> <gray>a puñetazos</gray>"
   mob:
     ZOMBIE:
-      - "<red><player></red> <gray>alimentó a un zombie hambriento</gray>"
+      - "<red>{player}</red> <gray>alimentó a un zombie hambriento</gray>"
     SKELETON:
-      - "<red><player></red> <gray>recibió un flechazo... pero no de amor</gray>"
+      - "<red>{player}</red> <gray>recibió un flechazo... pero no de amor</gray>"
     CREEPER:
-      - "<red><player></red> <gray>hizo amistad con un creeper. Solo una vez</gray>"
+      - "<red>{player}</red> <gray>hizo amistad con un creeper. Solo una vez</gray>"
     SPIDER:
-      - "<red><player></red> <gray>olvidó que las arañas también pican</gray>"
+      - "<red>{player}</red> <gray>olvidó que las arañas también pican</gray>"
     ENDER_DRAGON:
-      - "<dark_purple><player></dark_purple> <gray>osó desafiar al dragón... y perdió</gray>"
-      - "<dark_purple>El Dragón del End</dark_purple> <gray>reclamó el alma de</gray> <dark_purple><player></dark_purple>"
+      - "<dark_purple>{player}</dark_purple> <gray>osó desafiar al dragón... y perdió</gray>"
+      - "<dark_purple>El Dragón del End</dark_purple> <gray>reclamó el alma de</gray> <dark_purple>{player}</dark_purple>"
     WITHER:
-      - "<dark_gray><player></dark_gray> <gray>fue consumido por el Wither</gray>"
+      - "<dark_gray>{player}</dark_gray> <gray>fue consumido por el Wither</gray>"
     DEFAULT:
-      - "<red><player></red> <gray>fue derrotado por un</gray> <gray><mob></gray>"
+      - "<red>{player}</red> <gray>fue derrotado por un</gray> <gray>{mob}</gray>"
   unknown:
-    - "<red><player></red> <gray>murió de formas misteriosas</gray>"
-    - "<red><player></red> <gray>encontró el fin de su aventura</gray>"
+    - "<red>{player}</red> <gray>murió de formas misteriosas</gray>"
+    - "<red>{player}</red> <gray>encontró el fin de su aventura</gray>"
 
 global-broadcast:
   enabled-causes: [ENDER_DRAGON, WITHER, pvp]
@@ -111,7 +114,7 @@ global-broadcast:
 
 first-death-of-day:
   enabled: true
-  message: "<gold>¡<player></gold> <yellow>tiene el honor de morir primero hoy!</yellow>"
+  message: "<gold>¡{player}</gold> <yellow>tiene el honor de morir primero hoy!</yellow>"
 ```
 
 ---
@@ -125,9 +128,9 @@ The plugin picks templates **uniformly at random** from each category's list —
 ```yaml
 messages:
   fall:
-    - "<red><player></red> <gray>descubrió que la gravedad no negocia</gray>"
-    - "<red><player></red> <gray>cayó <yellow><distance></yellow> bloques. Sin paracaídas.</gray>"
-    - "<red><player></red> <gray>aterrizó como un saco de patatas en <green><biome></green></gray>"  # new
+    - "<red>{player}</red> <gray>descubrió que la gravedad no negocia</gray>"
+    - "<red>{player}</red> <gray>cayó <yellow>{distance}</yellow> bloques. Sin paracaídas.</gray>"
+    - "<red>{player}</red> <gray>aterrizó como un saco de patatas en <green>{biome}</green></gray>"  # new
 ```
 
 ### Add a new mob category
@@ -138,8 +141,8 @@ To handle blazes specifically, add a `BLAZE` key under `messages.mob`:
 messages:
   mob:
     BLAZE:
-      - "<red><player></red> <gray>fue carbonizado por un Blaze</gray>"
-      - "<gold><player></gold> <gray>aprendió que el Nether no perdona</gray>"
+      - "<red>{player}</red> <gray>fue carbonizado por un Blaze</gray>"
+      - "<gold>{player}</gold> <gray>aprendió que el Nether no perdona</gray>"
 ```
 
 The key must match the [Bukkit `EntityType` name](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html) exactly (uppercase). If you spell it wrong, the plugin falls back to `messages.mob.DEFAULT`.
@@ -149,8 +152,8 @@ The key must match the [Bukkit `EntityType` name](https://hub.spigotmc.org/javad
 ```yaml
 messages:
   unknown:
-    - "<red><player></red> <gray>murió de formas misteriosas</gray>"
-    - "<red><player></red> <gray>fue víctima de la entropía cósmica</gray>"
+    - "<red>{player}</red> <gray>murió de formas misteriosas</gray>"
+    - "<red>{player}</red> <gray>fue víctima de la entropía cósmica</gray>"
 ```
 
 After any edit:
@@ -183,13 +186,13 @@ global-broadcast:
 ```yaml
 first-death-of-day:
   enabled: true
-  message: "<gold>¡<player></gold> <yellow>tiene el honor de morir primero hoy!</yellow>"
+  message: "<gold>¡{player}</gold> <yellow>tiene el honor de morir primero hoy!</yellow>"
 ```
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `enabled` | bool | `true` | Set `false` to disable the feature |
-| `message` | string | `"<gold>¡<player></gold>..."` | The MiniMessage template. Supports `<player>` only |
+| `message` | string | `"<gold>¡{player}</gold>..."` | The MiniMessage template. Supports `{player}` only |
 
 The day boundary uses the server's local timezone. The tracker is in-memory and resets on plugin reload **or** at midnight (whichever comes first).
 
@@ -215,7 +218,7 @@ The day boundary uses the server's local timezone. The tracker is in-memory and 
 messages:
   mob:
     WITHER:
-      - "<gradient:dark_gray:black><bold><player></bold></gradient> <gray>fue consumido por el</gray> <dark_red><bold>Wither</bold></dark_red>"
+      - "<gradient:dark_gray:black><bold>{player}</bold></gradient> <gray>fue consumido por el</gray> <dark_red><bold>Wither</bold></dark_red>"
 ```
 
 ### Example: TTS-Studio crimson PvP variant
@@ -223,7 +226,7 @@ messages:
 ```yaml
 messages:
   pvp:
-    - "<#B33A3A><player></#B33A3A> <gray>cayó ante</gray> <#FFD700><killer></#FFD700>"
+    - "<#B33A3A>{player}</#B33A3A> <gray>cayó ante</gray> <#FFD700>{killer}</#FFD700>"
 ```
 
 ---
@@ -235,7 +238,7 @@ messages:
 3. The plugin re-reads the YAML and rebuilds the `MessagePicker`
 4. The next death uses your new templates immediately
 
-> 💡 **Tip:** If a template renders blank or shows the raw `<player>` token, you likely have invalid YAML — check the console for parse errors after reload.
+> 💡 **Tip:** If a template renders blank or shows the raw `{player}` token, you likely have invalid YAML — check the console for parse errors after reload.
 
 ---
 
