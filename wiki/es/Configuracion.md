@@ -56,12 +56,12 @@ Dentro de cualquier cadena de plantilla, los siguientes tokens se reemplazan ant
 
 | Token | Reemplazado por | Ejemplo |
 |-------|-----------------|---------|
-| `<player>` | Nombre de la víctima | `Steve` |
-| `<killer>` | Nombre del jugador asesino (vacío para muertes sin PvP) | `Alex` |
-| `<weapon>` | Nombre de visualización del arma, o material en title-case, o `manos` para mano vacía | `Diamond sword` / `Excalibur` / `manos` |
-| `<mob>` | Tipo del mob asesino en title-case (solo muertes por mob) | `Ender dragon` |
-| `<distance>` | Distancia de caída en bloques (entero) | `47` |
-| `<biome>` | Clave del bioma en la ubicación de la muerte | `minecraft:plains` |
+| `{player}` | Nombre de la víctima | `Steve` |
+| `{killer}` | Nombre del jugador asesino (vacío para muertes sin PvP) | `Alex` |
+| `{weapon}` | El nombre propio del arma con sus colores y símbolos (un degradado sigue siendo degradado), o el material en title-case. Una frase con `{weapon}` se salta si el asesino va con la mano vacía | `Diamond sword` / `[⚔] Excalibur [⚔]` |
+| `{mob}` | Tipo del mob asesino en title-case (solo muertes por mob) | `Ender dragon` |
+| `{distance}` | Distancia de caída en bloques (entero) | `47` |
+| `{biome}` | Clave del bioma en la ubicación de la muerte | `minecraft:plains` |
 
 ---
 
@@ -70,40 +70,43 @@ Dentro de cualquier cadena de plantilla, los siguientes tokens se reemplazan ant
 ```yaml
 messages:
   fall:
-    - "<red><player></red> <gray>descubrió que la gravedad no negocia</gray>"
-    - "<red><player></red> <gray>falló su examen de paracaidismo desde</gray> <yellow><distance></yellow> <gray>bloques</gray>"
+    - "<red>{player}</red> <gray>descubrió que la gravedad no negocia</gray>"
+    - "<red>{player}</red> <gray>falló su examen de paracaidismo desde</gray> <yellow>{distance}</yellow> <gray>bloques</gray>"
   lava:
-    - "<red><player></red> <gray>se convirtió en parte del paisaje volcánico</gray>"
-    - "<red><player></red> <gray>decidió nadar en lava... una sola vez</gray>"
+    - "<red>{player}</red> <gray>se convirtió en parte del paisaje volcánico</gray>"
+    - "<red>{player}</red> <gray>decidió nadar en lava... una sola vez</gray>"
   drown:
-    - "<red><player></red> <gray>recordó tarde que no es un pez</gray>"
-    - "<red><player></red> <gray>olvidó que respirar bajo el agua no es una habilidad humana</gray>"
+    - "<red>{player}</red> <gray>recordó tarde que no es un pez</gray>"
+    - "<red>{player}</red> <gray>olvidó que respirar bajo el agua no es una habilidad humana</gray>"
   void:
-    - "<red><player></red> <gray>exploró la nada eterna</gray>"
-    - "<red><player></red> <gray>se convenció de que el abismo era una piscina</gray>"
+    - "<red>{player}</red> <gray>exploró la nada eterna</gray>"
+    - "<red>{player}</red> <gray>se convenció de que el abismo era una piscina</gray>"
   pvp:
-    - "<red><player></red> <gray>fue derrotado por</gray> <gold><killer></gold> <gray>usando</gray> <aqua><weapon></aqua>"
-    - "<gold><killer></gold> <gray>demostró su superioridad sobre</gray> <red><player></red>"
-    - "<red><player></red> <gray>subestimó el poder de</gray> <gold><killer></gold>"
+    - "<red>{player}</red> <gray>fue derrotado por</gray> <gold>{killer}</gold> <gray>usando</gray> <aqua>{weapon}</aqua>"
+    - "<gold>{killer}</gold> <gray>demostró su superioridad sobre</gray> <red>{player}</red>"
+    - "<red>{player}</red> <gray>subestimó el poder de</gray> <gold>{killer}</gold>"
+  # Opcional: frases para un asesino con la mano vacía. Con ellas, pvp puede llevar solo frases con {weapon}.
+  pvp-unarmed:
+    - "<red>{player}</red> <gray>fue asesinado por</gray> <gold>{killer}</gold> <gray>a puñetazos</gray>"
   mob:
     ZOMBIE:
-      - "<red><player></red> <gray>alimentó a un zombie hambriento</gray>"
+      - "<red>{player}</red> <gray>alimentó a un zombie hambriento</gray>"
     SKELETON:
-      - "<red><player></red> <gray>recibió un flechazo... pero no de amor</gray>"
+      - "<red>{player}</red> <gray>recibió un flechazo... pero no de amor</gray>"
     CREEPER:
-      - "<red><player></red> <gray>hizo amistad con un creeper. Solo una vez</gray>"
+      - "<red>{player}</red> <gray>hizo amistad con un creeper. Solo una vez</gray>"
     SPIDER:
-      - "<red><player></red> <gray>olvidó que las arañas también pican</gray>"
+      - "<red>{player}</red> <gray>olvidó que las arañas también pican</gray>"
     ENDER_DRAGON:
-      - "<dark_purple><player></dark_purple> <gray>osó desafiar al dragón... y perdió</gray>"
-      - "<dark_purple>El Dragón del End</dark_purple> <gray>reclamó el alma de</gray> <dark_purple><player></dark_purple>"
+      - "<dark_purple>{player}</dark_purple> <gray>osó desafiar al dragón... y perdió</gray>"
+      - "<dark_purple>El Dragón del End</dark_purple> <gray>reclamó el alma de</gray> <dark_purple>{player}</dark_purple>"
     WITHER:
-      - "<dark_gray><player></dark_gray> <gray>fue consumido por el Wither</gray>"
+      - "<dark_gray>{player}</dark_gray> <gray>fue consumido por el Wither</gray>"
     DEFAULT:
-      - "<red><player></red> <gray>fue derrotado por un</gray> <gray><mob></gray>"
+      - "<red>{player}</red> <gray>fue derrotado por un</gray> <gray>{mob}</gray>"
   unknown:
-    - "<red><player></red> <gray>murió de formas misteriosas</gray>"
-    - "<red><player></red> <gray>encontró el fin de su aventura</gray>"
+    - "<red>{player}</red> <gray>murió de formas misteriosas</gray>"
+    - "<red>{player}</red> <gray>encontró el fin de su aventura</gray>"
 
 global-broadcast:
   enabled-causes: [ENDER_DRAGON, WITHER, pvp]
@@ -111,7 +114,7 @@ global-broadcast:
 
 first-death-of-day:
   enabled: true
-  message: "<gold>¡<player></gold> <yellow>tiene el honor de morir primero hoy!</yellow>"
+  message: "<gold>¡{player}</gold> <yellow>tiene el honor de morir primero hoy!</yellow>"
 ```
 
 ---
@@ -125,9 +128,9 @@ El plugin elige plantillas **uniformemente al azar** de la lista de cada categor
 ```yaml
 messages:
   fall:
-    - "<red><player></red> <gray>descubrió que la gravedad no negocia</gray>"
-    - "<red><player></red> <gray>cayó <yellow><distance></yellow> bloques. Sin paracaídas.</gray>"
-    - "<red><player></red> <gray>aterrizó como un saco de patatas en <green><biome></green></gray>"  # nueva
+    - "<red>{player}</red> <gray>descubrió que la gravedad no negocia</gray>"
+    - "<red>{player}</red> <gray>cayó <yellow>{distance}</yellow> bloques. Sin paracaídas.</gray>"
+    - "<red>{player}</red> <gray>aterrizó como un saco de patatas en <green>{biome}</green></gray>"  # nueva
 ```
 
 ### Añadir una nueva categoría de mob
@@ -138,8 +141,8 @@ Para gestionar blazes específicamente, añade una clave `BLAZE` bajo `messages.
 messages:
   mob:
     BLAZE:
-      - "<red><player></red> <gray>fue carbonizado por un Blaze</gray>"
-      - "<gold><player></gold> <gray>aprendió que el Nether no perdona</gray>"
+      - "<red>{player}</red> <gray>fue carbonizado por un Blaze</gray>"
+      - "<gold>{player}</gold> <gray>aprendió que el Nether no perdona</gray>"
 ```
 
 La clave debe coincidir exactamente con el [nombre `EntityType` de Bukkit](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html) (en mayúsculas). Si lo escribes mal, el plugin usa como respaldo `messages.mob.DEFAULT`.
@@ -149,8 +152,8 @@ La clave debe coincidir exactamente con el [nombre `EntityType` de Bukkit](https
 ```yaml
 messages:
   unknown:
-    - "<red><player></red> <gray>murió de formas misteriosas</gray>"
-    - "<red><player></red> <gray>fue víctima de la entropía cósmica</gray>"
+    - "<red>{player}</red> <gray>murió de formas misteriosas</gray>"
+    - "<red>{player}</red> <gray>fue víctima de la entropía cósmica</gray>"
 ```
 
 Después de cualquier edición:
@@ -183,13 +186,13 @@ global-broadcast:
 ```yaml
 first-death-of-day:
   enabled: true
-  message: "<gold>¡<player></gold> <yellow>tiene el honor de morir primero hoy!</yellow>"
+  message: "<gold>¡{player}</gold> <yellow>tiene el honor de morir primero hoy!</yellow>"
 ```
 
 | Clave | Tipo | Por Defecto | Descripción |
 |-------|------|-------------|-------------|
 | `enabled` | bool | `true` | Establece `false` para deshabilitar la función |
-| `message` | string | `"<gold>¡<player></gold>..."` | La plantilla MiniMessage. Solo soporta `<player>` |
+| `message` | string | `"<gold>¡{player}</gold>..."` | La plantilla MiniMessage. Solo soporta `{player}` |
 
 El límite del día usa la zona horaria local del servidor. El rastreador está en memoria y se reinicia al recargar el plugin **o** a medianoche (lo que ocurra primero).
 
@@ -215,7 +218,7 @@ El límite del día usa la zona horaria local del servidor. El rastreador está 
 messages:
   mob:
     WITHER:
-      - "<gradient:dark_gray:black><bold><player></bold></gradient> <gray>fue consumido por el</gray> <dark_red><bold>Wither</bold></dark_red>"
+      - "<gradient:dark_gray:black><bold>{player}</bold></gradient> <gray>fue consumido por el</gray> <dark_red><bold>Wither</bold></dark_red>"
 ```
 
 ### Ejemplo: variante PvP con carmesí de TTS-Studio
@@ -223,7 +226,7 @@ messages:
 ```yaml
 messages:
   pvp:
-    - "<#B33A3A><player></#B33A3A> <gray>cayó ante</gray> <#FFD700><killer></#FFD700>"
+    - "<#B33A3A>{player}</#B33A3A> <gray>cayó ante</gray> <#FFD700>{killer}</#FFD700>"
 ```
 
 ---
@@ -235,7 +238,7 @@ messages:
 3. El plugin relee el YAML y reconstruye el `MessagePicker`
 4. La siguiente muerte usa tus nuevas plantillas inmediatamente
 
-> 💡 **Consejo:** Si una plantilla se renderiza vacía o muestra el token `<player>` literal, probablemente tengas YAML inválido — comprueba la consola en busca de errores de análisis después de la recarga.
+> 💡 **Consejo:** Si una plantilla se renderiza vacía o muestra el token `{player}` literal, probablemente tengas YAML inválido — comprueba la consola en busca de errores de análisis después de la recarga.
 
 ---
 

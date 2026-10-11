@@ -65,6 +65,11 @@ public class MessagePicker {
         String lastWords = resolveLastWords(ctx);
         String weapon = weaponName(ctx.weapon());
         List<String> templateList = getTemplates(category);
+        // A killer with an empty hand gets messages.pvp-unarmed when it exists, so pvp can be all {weapon} lines.
+        if ("pvp".equals(category) && weapon.isEmpty()) {
+            List<String> unarmed = templates.getStringList("messages.pvp-unarmed");
+            if (!unarmed.isEmpty()) templateList = unarmed;
+        }
         if (templateList.isEmpty()) templateList = templates.getStringList("messages.unknown");
         if (lastWords.isBlank()) templateList = without(templateList, "{last_words}");
         if (weapon.isEmpty()) templateList = without(templateList, "{weapon}");
