@@ -33,7 +33,7 @@ class WeaponNameTest {
     }
 
     @Test
-    void unnamedWeaponIsPlainText() {
-        assertEquals(Component.text("Iron sword"), MessagePicker.weaponComponent(null, "Iron sword"));
+    void unnamedWeaponIsTranslatedByTheClient() {
+        assertEquals("item.minecraft.iron_sword", Names.materialKey(org.bukkit.Material.IRON_SWORD));
     }
 }

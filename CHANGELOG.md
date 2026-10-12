@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.4.2] — retenida (sin fecha hasta publicarla)
+
+### Added
+- **Kills the killer did not land himself are credited to him**: an end crystal or TNT he set off, a fall or
+  lava after his hit. New lists `messages.pvp-<cause>` (`pvp-explosion`, `pvp-fall`, `pvp-lava`, `pvp-void`…)
+  and `messages.pvp-indirect`; without them the line comes from `pvp`.
+- **Mobs with their own name are called by it** (a MythicMobs boss, a name tag, an NPC), with its colours.
+  New list `messages.mob-named`; without it the mob's type list is used.
+- **`{killer_papi:<placeholder>}` and `{player_papi:<placeholder>}`**: a PlaceholderAPI value of the killer or
+  the victim inside a death line (for example the hearts of a lifesteal killer). A line whose value cannot be
+  read is skipped.
+
+### Changed
+- **Weapons, mobs and biomes without a name of their own show in each player's game language**
+  ("Espada de diamante", "Zombi") instead of the English name of the material or type. Older chat routes
+  keep the English name as fallback. Items named with `item_name` (1.20.5+) keep that name.
+- Spanish lines: mob names in Spanish, a typo, and streak lines that say "bajas" with one exclamation at most.
+
+### Fixed
+- **Citizens NPCs are not players**: a dying NPC (a combat-logger stand-in) no longer gets a death line, a
+  death or a kill in the stats, and an NPC that kills a player reads as a named mob instead of PvP.
+- **A plugin that kills a player on purpose can keep it quiet**: with the `bdm-silent` metadata on the player
+  (set right before the kill), there is no death line and nothing goes to the stats. Meant for combat-logger
+  penalties on rejoin, which would otherwise read "died in mysterious ways".
+
 ## [1.4.1] — 2026-10-12
 
 ### Fixed

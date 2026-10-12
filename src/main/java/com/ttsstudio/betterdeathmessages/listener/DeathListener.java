@@ -33,6 +33,8 @@ import java.util.logging.Level;
 public class DeathListener implements Listener {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
+    /** Metadata another plugin sets on a player right before killing him to keep this death out of chat and stats. */
+    public static final String SILENT = "bdm-silent";
     private final BetterDeathMessagesPlugin plugin;
 
     public DeathListener(BetterDeathMessagesPlugin plugin) {
@@ -56,6 +58,13 @@ public class DeathListener implements Listener {
 
     private void handleDeath(PlayerDeathEvent event) {
         Player victim = event.getEntity();
+        // A Citizens NPC (a combat-logger stand-in, a guard) is not a player: no line, no stats.
+        // Whoever spawned it speaks for it (CombatLogger sends its own).
+        // Another plugin that kills on purpose (a combat-logger penalty on rejoin) and speaks for itself
+        if (isNpc(victim) || victim.hasMetadata(SILENT)) {
+            Texts.deathMessage(event, null);
+            return;
+        }
         EntityDamageEvent lastDmg = victim.getLastDamageCause();
 
         Player playerKiller = null;
@@ -64,10 +73,10 @@ public class DeathListener implements Listener {
 
         if (lastDmg instanceof EntityDamageByEntityEvent byEntity) {
             Entity damager = byEntity.getDamager();
-            if (damager instanceof Player p) {
+            if (damager instanceof Player p && !isNpc(p)) {
                 playerKiller = p;
                 weapon = p.getInventory().getItemInMainHand().clone();
-            } else if (damager instanceof Projectile proj && proj.getShooter() instanceof Player p) {
+            } else if (damager instanceof Projectile proj && proj.getShooter() instanceof Player p && !isNpc(p)) {
                 playerKiller = p;
                 weapon = p.getInventory().getItemInMainHand().clone();
             } else {
@@ -78,6 +87,17 @@ public class DeathListener implements Listener {
         EntityDamageEvent.DamageCause cause = lastDmg != null
             ? lastDmg.getCause()
             : EntityDamageEvent.DamageCause.CUSTOM;
+
+        // An end crystal, TNT, lava or a fall after a hit: the server still knows who did it
+        String indirectCause = null;
+        if (playerKiller == null && mobKiller == null) {
+            Player credited = creditedKiller(victim);
+            if (credited != null) {
+                playerKiller = credited;
+                weapon = credited.getInventory().getItemInMainHand().clone();
+                indirectCause = DeathCategoryResolver.resolve(false, false, "", cause.name(), damageType(lastDmg));
+            }
+        }
 
         String dimension = switch (victim.getWorld().getEnvironment()) {
             case NETHER   -> "nether";
@@ -98,10 +118,11 @@ public class DeathListener implements Listener {
             damageType(lastDmg),
             weapon,
             victim.getFallDistance(),
-            ((org.bukkit.Keyed) victim.getWorld().getBiome(victim.getLocation())).getKey().getKey(),
+            ((org.bukkit.Keyed) victim.getWorld().getBiome(victim.getLocation())).getKey().toString(),
             victim.getLocation(),
             dimension,
-            inventoryValue
+            inventoryValue,
+            indirectCause
         );
 
         String category = DeathCategoryResolver.resolve(
@@ -213,6 +234,18 @@ public class DeathListener implements Listener {
                 Texts.broadcast(MM.deserialize(msg));
             }
         }
+    }
+
+    /** Citizens (and most NPC plugins) tag their entities with the "NPC" metadata. */
+    public static boolean isNpc(Entity entity) {
+        return entity != null && entity.hasMetadata("NPC");
+    }
+
+    /** The player the server credits with this death (getKiller), when it is someone else and a real player. */
+    public static Player creditedKiller(Player victim) {
+        Player killer = victim.getKiller();
+        if (killer == null || killer.getUniqueId().equals(victim.getUniqueId()) || isNpc(killer)) return null;
+        return killer;
     }
 
     /**

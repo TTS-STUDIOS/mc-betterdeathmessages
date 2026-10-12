@@ -58,10 +58,12 @@ Within any template string, the following tokens are replaced before MiniMessage
 |-------|---------------|---------|
 | `{player}` | Victim's name | `Steve` |
 | `{killer}` | Player killer's name (empty for non-PvP) | `Alex` |
-| `{weapon}` | The weapon's own name with its colours and symbols (a gradient stays a gradient), or the material in title-case. A line with `{weapon}` is skipped when the killer's hand is empty | `Diamond sword` / `[⚔] Excalibur [⚔]` |
-| `{mob}` | Killer mob's type in title-case (mob deaths only) | `Ender dragon` |
+| `{weapon}` | The weapon's own name with its colours and symbols (a gradient stays a gradient). Without a name, the item's name **in each player's game language** ("Espada de diamante" for a Spanish client). A line with `{weapon}` is skipped when the killer's hand is empty | `Diamond sword` / `[⚔] Excalibur [⚔]` |
+| `{mob}` | The mob's own name when it has one (a MythicMobs boss, a name tag, an NPC), else its type in each player's language (mob deaths only) | `Ender Dragon` / `Anzu` |
+| `{killer_papi:<placeholder>}` | A PlaceholderAPI value of the killer, written without `%`. A line whose value cannot be read (no PAPI, no killer) is skipped | `{killer_papi:lifestealz_hearts}` → `14` |
+| `{player_papi:<placeholder>}` | The same, for the victim | |
 | `{distance}` | Fall distance in blocks (integer) | `47` |
-| `{biome}` | Biome key at the death location | `minecraft:plains` |
+| `{biome}` | Biome at the death location, in each player's language | `Plains` |
 
 ---
 
@@ -88,6 +90,15 @@ messages:
   # Optional: lines for a killer with an empty hand. With it, pvp can be all {weapon} lines.
   pvp-unarmed:
     - "<red>{player}</red> <gray>fue asesinado por</gray> <gold>{killer}</gold> <gray>a puñetazos</gray>"
+  # Optional (1.4.2): a kill the killer did not land himself (an end crystal, TNT, a fall or lava
+  # after a hit) is still credited to him. pvp-<cause> first, then pvp-indirect, then pvp.
+  pvp-explosion:
+    - "<red>{player}</red> <gray>saltó por los aires por culpa de</gray> <gold>{killer}</gold>"
+  pvp-indirect:
+    - "<red>{player}</red> <gray>murió intentando escapar de</gray> <gold>{killer}</gold>"
+  # Optional (1.4.2): a mob with its own name. Without it, the mob's type list is used.
+  mob-named:
+    - "<red>{player}</red> <gray>fue abatido por</gray> {mob}"
   mob:
     ZOMBIE:
       - "<red>{player}</red> <gray>alimentó a un zombie hambriento</gray>"
@@ -243,3 +254,9 @@ messages:
 ---
 
 🏠 [Home](Home) · 📦 [Installation](Installation) · 🎮 [Commands & Permissions](Commands-and-Permissions) · 📊 [PlaceholderAPI](PlaceholderAPI)
+
+## 🤫 Deaths other plugins announce themselves (1.4.2)
+
+- A Citizens NPC that dies (a combat-logger stand-in, a guard) gets no death line and does not count in the stats.
+- A plugin that kills a player on purpose (a combat-logger penalty on rejoin) can set the `bdm-silent` metadata on
+  him right before the kill: that death gets no line and does not count.
