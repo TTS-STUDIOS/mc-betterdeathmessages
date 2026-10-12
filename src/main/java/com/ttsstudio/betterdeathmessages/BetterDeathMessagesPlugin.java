@@ -61,7 +61,7 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
         lastWordsCache = new LastWordsCache(cacheSeconds * 1000L);
 
         // MessagePicker is rebuilt here so it has the cache + lang templates.
-        messagePicker = new MessagePicker(messageManager.getTemplates(), configManager.raw(), lastWordsCache);
+        messagePicker = newPicker();
 
         java.util.List<Integer> thresholds = configManager.killStreakThresholds();
         killStreakBroadcaster = thresholds.isEmpty()
@@ -100,6 +100,13 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
             .emit();
     }
 
+    /** Built on enable and on reload; PlaceholderAPI lines only when PAPI is there. */
+    private MessagePicker newPicker() {
+        boolean papi = getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
+        return new MessagePicker(messageManager.getTemplates(), configManager.raw(), lastWordsCache,
+            papi ? com.ttsstudio.betterdeathmessages.integration.PapiText::value : null);
+    }
+
     @Override
     public void onDisable() {
         if (deathStatsService != null) {
@@ -113,7 +120,7 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
         configManager.reload();
         messageManager.reload();
         // Rebuild picker so it picks up the reloaded messages + plugin config.
-        messagePicker = new MessagePicker(messageManager.getTemplates(), configManager.raw(), lastWordsCache);
+        messagePicker = newPicker();
 
         // Rebuild kill streak broadcaster with new threshold config.
         java.util.List<Integer> thresholds = configManager.killStreakThresholds();

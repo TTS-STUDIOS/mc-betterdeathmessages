@@ -116,6 +116,22 @@ messages:
     - "<red>{player}</red> <gray>underestimated</gray> <gold>{killer}</gold> <gray>at</gray> <aqua>{x}, {y}, {z}</aqua>"
     - "<gold>{killer}</gold> <gray>sent</gray> <red>{player}</red> <gray>back to their bed with a</gray> <aqua>{weapon}</aqua>"
     - "<red>{player}</red><gray>'s last words:</gray> <italic><gray>{last_words}</gray></italic> <gray>— then</gray> <gold>{killer}</gold> <gray>arrived</gray>"
+  # A kill the server credits without the killer landing the blow (an end crystal, TNT, a fall or lava after a hit).
+  # pvp-<cause> first (explosion, fall, lava, void, fire, drown…), then pvp-indirect, then pvp.
+  pvp-explosion:
+    - "<red>{player}</red> <gray>was blown up by</gray> <gold>{killer}</gold>"
+  pvp-fall:
+    - "<red>{player}</red> <gray>was knocked off a ledge by</gray> <gold>{killer}</gold>"
+  pvp-lava:
+    - "<red>{player}</red> <gray>was pushed into lava by</gray> <gold>{killer}</gold>"
+  pvp-void:
+    - "<red>{player}</red> <gray>was knocked into the void by</gray> <gold>{killer}</gold>"
+  pvp-indirect:
+    - "<red>{player}</red> <gray>died trying to escape</gray> <gold>{killer}</gold>"
+  # A mob with its own name (a boss, a name tag, an NPC): {mob} is that name.
+  mob-named:
+    - "<red>{player}</red> <gray>was slain by</gray> {mob}"
+    - "{mob} <gray>claimed</gray> <red>{player}</red>"
   mob:
     ZOMBIE:
       - "<red>{player}</red> <gray>fed a hungry zombie at</gray> <aqua>{x}, {z}</aqua>"

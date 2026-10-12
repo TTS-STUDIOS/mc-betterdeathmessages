@@ -2,18 +2,17 @@ package com.ttsstudio.betterdeathmessages.message;
 
 import com.ttsstudio.betterdeathmessages.lastwords.LastWordsCache;
 import com.ttsstudio.betterdeathmessages.model.DeathContext;
-import com.ttsstudio.sdk.text.Items;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,17 +39,27 @@ public class MessagePicker {
     private final FileConfiguration templates;
     private final FileConfiguration pluginConfig;
     private final LastWordsCache lastWordsCache;
+    /** PlaceholderAPI lookup (player, identifier without %) or {@code null} without PAPI. */
+    private final BiFunction<Player, String, String> placeholders;
 
     public MessagePicker(FileConfiguration templates) {
-        this(templates, null, null);
+        this(templates, null, null, null);
     }
 
     public MessagePicker(FileConfiguration templates,
                          FileConfiguration pluginConfig,
                          LastWordsCache lastWordsCache) {
+        this(templates, pluginConfig, lastWordsCache, null);
+    }
+
+    public MessagePicker(FileConfiguration templates,
+                         FileConfiguration pluginConfig,
+                         LastWordsCache lastWordsCache,
+                         BiFunction<Player, String, String> placeholders) {
         this.templates = templates;
         this.pluginConfig = pluginConfig;
         this.lastWordsCache = lastWordsCache;
+        this.placeholders = placeholders;
     }
 
     public Component pick(DeathContext ctx) {
@@ -63,31 +72,28 @@ public class MessagePicker {
         );
 
         String lastWords = resolveLastWords(ctx);
-        String weapon = weaponName(ctx.weapon());
-        List<String> templateList = getTemplates(category);
-        // A killer with an empty hand gets messages.pvp-unarmed when it exists, so pvp can be all {weapon} lines.
-        if ("pvp".equals(category) && weapon.isEmpty()) {
-            List<String> unarmed = templates.getStringList("messages.pvp-unarmed");
-            if (!unarmed.isEmpty()) templateList = unarmed;
-        }
+        String weapon = Names.itemPlain(ctx.weapon());
+        boolean namedMob = ctx.mobKiller() != null && Names.customName(ctx.mobKiller()) != null;
+        List<String> templateList = templatesFor(category, ctx.indirectCause(), weapon.isEmpty(), namedMob);
         if (templateList.isEmpty()) templateList = templates.getStringList("messages.unknown");
         if (lastWords.isBlank()) templateList = without(templateList, "{last_words}");
         if (weapon.isEmpty()) templateList = without(templateList, "{weapon}");
+        templateList = resolvable(templateList, ctx);
         if (templateList.isEmpty()) return Component.text(ctx.victim().getName() + " died.");
 
         String template = templateList.get(RANDOM.nextInt(templateList.size()));
-        String mob = ctx.mobKiller() != null ? formatMob(ctx.mobKiller().getType().name()) : "";
+        String mob = ctx.mobKiller() != null ? Names.mobPlain(ctx.mobKiller()) : "";
         if (english()) {
             template = fixArticle(template, "{weapon}", weapon);
-            template = fixArticle(template, "{mob}", mob);
+            if (!namedMob) template = fixArticle(template, "{mob}", mob);
         }
-        String rendered = template
+        String rendered = withPlaceholders(template, ctx)
             .replace("{player}",     ctx.victim().getName())
             .replace("{killer}",     ctx.playerKiller() != null ? ctx.playerKiller().getName() : "")
             .replace("{weapon}",     "<bdm_weapon>")
-            .replace("{mob}",        mob)
+            .replace("{mob}",        "<bdm_mob>")
             .replace("{distance}",   String.format(java.util.Locale.ROOT, "%.0f", distance(ctx)))
-            .replace("{biome}",      biomeName(ctx.biome()))
+            .replace("{biome}",      "<bdm_biome>")
             .replace("{last_words}", lastWords)
             .replace("{x}",          String.valueOf((int) ctx.deathLocation().getX()))
             .replace("{y}",          String.valueOf((int) ctx.deathLocation().getY()))
@@ -95,20 +101,66 @@ public class MessagePicker {
             .replace("{dimension}",       ctx.dimension())
             .replace("{inventory_value}", String.format(java.util.Locale.ROOT, "%.0f", ctx.inventoryValue()));
 
-        return MM.deserialize(rendered, Placeholder.component("bdm_weapon", weaponComponent(ctx.weapon(), weapon)));
+        return MM.deserialize(rendered,
+            Placeholder.component("bdm_weapon", Names.item(ctx.weapon())),
+            Placeholder.component("bdm_mob", ctx.mobKiller() != null ? Names.mob(ctx.mobKiller()) : Component.empty()),
+            Placeholder.component("bdm_biome", Names.biome(ctx.biome())));
     }
 
     /**
-     * The weapon's own name as it shows on the item, gradient and symbols included. It goes in
-     * as a finished component, never parsed as MiniMessage, so a name typed on an anvil cannot
-     * add tags to a message the whole server sees.
+     * The list a death draws from. A kill credited after the fact (a crystal, a fall, lava after
+     * a hit) reads messages.pvp-&lt;cause&gt;, then messages.pvp-indirect, then pvp; bare fists read
+     * messages.pvp-unarmed; a mob with its own name reads messages.mob-named before its type's list.
      */
-    static Component weaponComponent(ItemStack item, String plain) {
-        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            String legacy = item.getItemMeta().getDisplayName();
-            if (legacy != null && !legacy.isEmpty()) return LegacyComponentSerializer.legacySection().deserialize(legacy);
+    List<String> templatesFor(String category, String indirectCause, boolean unarmed, boolean namedMob) {
+        if ("pvp".equals(category) && indirectCause != null) {
+            List<String> byCause = templates.getStringList("messages.pvp-" + indirectCause);
+            if (!byCause.isEmpty()) return byCause;
+            List<String> indirect = templates.getStringList("messages.pvp-indirect");
+            if (!indirect.isEmpty()) return indirect;
         }
-        return Component.text(plain);
+        // A killer with an empty hand gets messages.pvp-unarmed when it exists, so pvp can be all {weapon} lines.
+        if ("pvp".equals(category) && unarmed && indirectCause == null) {
+            List<String> fists = templates.getStringList("messages.pvp-unarmed");
+            if (!fists.isEmpty()) return fists;
+        }
+        if (namedMob && category.startsWith("mob.")) {
+            List<String> named = templates.getStringList("messages.mob-named");
+            if (!named.isEmpty()) return named;
+        }
+        return getTemplates(category);
+    }
+
+    /** {killer_papi:lifestealz_hearts}: a PlaceholderAPI value of the killer ({player_papi:…} for the victim). */
+    private static final Pattern PAPI_TOKEN = Pattern.compile("\\{(killer|player)_papi:([A-Za-z0-9_\\-]+)}");
+
+    /**
+     * Drops the lines whose PlaceholderAPI values cannot be filled (no PAPI, no killer, a
+     * placeholder nobody answers). If none can, the list is kept and the tokens stay as typed.
+     */
+    List<String> resolvable(List<String> list, DeathContext ctx) {
+        List<String> kept = list.stream().filter(t -> withPlaceholdersOrNull(t, ctx) != null).toList();
+        return kept.isEmpty() ? list : kept;
+    }
+
+    private String withPlaceholders(String template, DeathContext ctx) {
+        String out = withPlaceholdersOrNull(template, ctx);
+        return out != null ? out : PAPI_TOKEN.matcher(template).replaceAll("");
+    }
+
+    private String withPlaceholdersOrNull(String template, DeathContext ctx) {
+        Matcher m = PAPI_TOKEN.matcher(template);
+        StringBuilder out = new StringBuilder();
+        while (m.find()) {
+            Player who = "killer".equals(m.group(1)) ? ctx.playerKiller() : ctx.victim();
+            if (who == null || placeholders == null) return null;
+            String value = placeholders.apply(who, m.group(2));
+            // PAPI hands the token back untouched when no expansion answers it
+            if (value == null || value.isBlank() || value.contains("%")) return null;
+            m.appendReplacement(out, Matcher.quoteReplacement(escapeForMiniMessage(value)));
+        }
+        m.appendTail(out);
+        return out.toString();
     }
 
     /** How far the killer stood (a skeleton's shot), or how far the victim fell. */
@@ -190,21 +242,5 @@ public class MessagePicker {
             return templates.getStringList("messages.mob.DEFAULT");
         }
         return templates.getStringList("messages." + category);
-    }
-
-    private String weaponName(ItemStack item) {
-        if (item == null || item.getType().isAir()) return "";
-        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            // An anvil name is typed by the player and ends up in a message sent
-            // to the whole server: its tags must stay text.
-            return Items.plainName(item.getItemMeta());
-        }
-        String raw = item.getType().name().replace("_", " ").toLowerCase();
-        return Character.toUpperCase(raw.charAt(0)) + raw.substring(1);
-    }
-
-    private String formatMob(String typeName) {
-        String raw = typeName.replace("_", " ").toLowerCase();
-        return Character.toUpperCase(raw.charAt(0)) + raw.substring(1);
     }
 }

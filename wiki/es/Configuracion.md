@@ -58,10 +58,12 @@ Dentro de cualquier cadena de plantilla, los siguientes tokens se reemplazan ant
 |-------|-----------------|---------|
 | `{player}` | Nombre de la víctima | `Steve` |
 | `{killer}` | Nombre del jugador asesino (vacío para muertes sin PvP) | `Alex` |
-| `{weapon}` | El nombre propio del arma con sus colores y símbolos (un degradado sigue siendo degradado), o el material en title-case. Una frase con `{weapon}` se salta si el asesino va con la mano vacía | `Diamond sword` / `[⚔] Excalibur [⚔]` |
-| `{mob}` | Tipo del mob asesino en title-case (solo muertes por mob) | `Ender dragon` |
+| `{weapon}` | El nombre propio del arma con sus colores y símbolos (un degradado sigue siendo degradado). Sin nombre, el del objeto **en el idioma del juego de cada jugador** («Espada de diamante» en un cliente en español). Una frase con `{weapon}` se salta si el asesino va con la mano vacía | `Espada de diamante` / `[⚔] Excalibur [⚔]` |
+| `{mob}` | El nombre propio del mob si lo tiene (un jefe de MythicMobs, una etiqueta, un NPC); si no, su tipo en el idioma de cada jugador (solo muertes por mob) | `Enderdragón` / `Anzu` |
+| `{killer_papi:<marcador>}` | Un valor de PlaceholderAPI del asesino, escrito sin `%`. La frase se salta si no se puede leer (sin PAPI, sin asesino) | `{killer_papi:lifestealz_hearts}` → `14` |
+| `{player_papi:<marcador>}` | Lo mismo, de la víctima | |
 | `{distance}` | Distancia de caída en bloques (entero) | `47` |
-| `{biome}` | Clave del bioma en la ubicación de la muerte | `minecraft:plains` |
+| `{biome}` | Bioma donde murió, en el idioma de cada jugador | `Llanuras` |
 
 ---
 
@@ -88,6 +90,15 @@ messages:
   # Opcional: frases para un asesino con la mano vacía. Con ellas, pvp puede llevar solo frases con {weapon}.
   pvp-unarmed:
     - "<red>{player}</red> <gray>fue asesinado por</gray> <gold>{killer}</gold> <gray>a puñetazos</gray>"
+  # Opcional (1.4.2): una baja que el asesino no remató (cristal del End, TNT, caída o lava tras
+  # un golpe) se le atribuye igual. Primero pvp-<causa>, luego pvp-indirect y luego pvp.
+  pvp-explosion:
+    - "<red>{player}</red> <gray>saltó por los aires por culpa de</gray> <gold>{killer}</gold>"
+  pvp-indirect:
+    - "<red>{player}</red> <gray>murió intentando escapar de</gray> <gold>{killer}</gold>"
+  # Opcional (1.4.2): un mob con nombre propio. Sin esta lista, se usa la de su tipo.
+  mob-named:
+    - "<red>{player}</red> <gray>fue abatido por</gray> {mob}"
   mob:
     ZOMBIE:
       - "<red>{player}</red> <gray>alimentó a un zombie hambriento</gray>"
