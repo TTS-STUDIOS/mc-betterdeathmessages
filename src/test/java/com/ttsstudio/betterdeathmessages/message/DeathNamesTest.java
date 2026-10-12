@@ -190,6 +190,11 @@ class DeathNamesTest {
     }
 
     @Test
+    void theSilentMetadataKeyIsStable() {
+        assertEquals("bdm-silent", DeathListener.SILENT);
+    }
+
+    @Test
     void anNpcKillerReadsAsANamedMob() {
         Player guard = Fakes.player("Guardia", true, null);
         Component out = picker(null).pick(ctx(Fakes.player("Steve"), null, guard, DamageCause.ENTITY_ATTACK, null));

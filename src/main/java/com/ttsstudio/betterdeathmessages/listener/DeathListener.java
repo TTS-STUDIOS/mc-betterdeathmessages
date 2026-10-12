@@ -33,6 +33,8 @@ import java.util.logging.Level;
 public class DeathListener implements Listener {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
+    /** Metadata another plugin sets on a player right before killing him to keep this death out of chat and stats. */
+    public static final String SILENT = "bdm-silent";
     private final BetterDeathMessagesPlugin plugin;
 
     public DeathListener(BetterDeathMessagesPlugin plugin) {
@@ -58,7 +60,8 @@ public class DeathListener implements Listener {
         Player victim = event.getEntity();
         // A Citizens NPC (a combat-logger stand-in, a guard) is not a player: no line, no stats.
         // Whoever spawned it speaks for it (CombatLogger sends its own).
-        if (isNpc(victim)) {
+        // Another plugin that kills on purpose (a combat-logger penalty on rejoin) and speaks for itself
+        if (isNpc(victim) || victim.hasMetadata(SILENT)) {
             Texts.deathMessage(event, null);
             return;
         }

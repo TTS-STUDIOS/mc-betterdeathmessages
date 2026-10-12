@@ -254,3 +254,9 @@ messages:
 ---
 
 🏠 [Inicio](Home.md) · 📦 [Instalación](Instalacion.md) · 🎮 [Comandos y Permisos](Comandos-y-Permisos.md) · 📊 [PlaceholderAPI](PlaceholderAPI.md)
+
+## 🤫 Muertes que anuncia otro plugin (1.4.2)
+
+- Un NPC de Citizens que muere (el sustituto de un combat-logger, un guardia) no tiene frase ni cuenta en las estadísticas.
+- Un plugin que mata a un jugador a propósito (el castigo de un combat-logger al volver a entrar) puede ponerle el
+  metadato `bdm-silent` justo antes: esa muerte no tiene frase y no cuenta.

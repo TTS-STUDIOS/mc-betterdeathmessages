@@ -21,6 +21,9 @@
 ### Fixed
 - **Citizens NPCs are not players**: a dying NPC (a combat-logger stand-in) no longer gets a death line, a
   death or a kill in the stats, and an NPC that kills a player reads as a named mob instead of PvP.
+- **A plugin that kills a player on purpose can keep it quiet**: with the `bdm-silent` metadata on the player
+  (set right before the kill), there is no death line and nothing goes to the stats. Meant for combat-logger
+  penalties on rejoin, which would otherwise read "died in mysterious ways".
 
 ## [1.4.1] — 2026-10-12
 

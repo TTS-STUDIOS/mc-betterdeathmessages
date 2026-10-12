@@ -254,3 +254,9 @@ messages:
 ---
 
 🏠 [Home](Home) · 📦 [Installation](Installation) · 🎮 [Commands & Permissions](Commands-and-Permissions) · 📊 [PlaceholderAPI](PlaceholderAPI)
+
+## 🤫 Deaths other plugins announce themselves (1.4.2)
+
+- A Citizens NPC that dies (a combat-logger stand-in, a guard) gets no death line and does not count in the stats.
+- A plugin that kills a player on purpose (a combat-logger penalty on rejoin) can set the `bdm-silent` metadata on
+  him right before the kill: that death gets no line and does not count.
