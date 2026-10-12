@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1] — 2026-10-12
+
+### Fixed
+- **Crashing into a wall with an elytra has its own death lines** instead of «died in mysterious ways».
+  New `messages.kinetic` category, in English and Spanish.
+- **New message categories reach servers that already edited their language file.** A missing key now
+  falls back to the plugin's own lines instead of the generic one.
+
 ## [1.4.0] — 2026-10-12
 
 ### Changed

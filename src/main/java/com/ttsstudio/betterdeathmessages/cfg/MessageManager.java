@@ -74,7 +74,14 @@ public final class MessageManager {
         // Prefer operator-edited copy in the data folder.
         File dataFile = new File(plugin.getDataFolder(), "lang/" + locale + ".yml");
         if (dataFile.exists()) {
-            return YamlConfiguration.loadConfiguration(dataFile);
+            YamlConfiguration edited = YamlConfiguration.loadConfiguration(dataFile);
+            // Categories added in later versions reach an older edited copy through the bundled defaults
+            InputStream bundled = plugin.getResource("lang/" + locale + ".yml");
+            if (bundled != null) {
+                edited.setDefaults(YamlConfiguration.loadConfiguration(
+                    new InputStreamReader(bundled, StandardCharsets.UTF_8)));
+            }
+            return edited;
         }
         // Fall back to the bundled resource.
         InputStream bundled = plugin.getResource("lang/" + locale + ".yml");

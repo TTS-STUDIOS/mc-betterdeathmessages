@@ -142,4 +142,10 @@ class DeathCategoryResolverTest {
     void unknownTypeFallsBackToTheCause() {
         assertEquals("fall", DeathCategoryResolver.resolve(false, false, "", "FALL", "some_mod:odd"));
     }
+
+    @Test
+    void elytraCrashIsKinetic() {
+        assertEquals("kinetic", DeathCategoryResolver.resolve(false, false, "", "FLY_INTO_WALL"));
+        assertEquals("kinetic", DeathCategoryResolver.resolve(false, false, "", "CUSTOM", "fly_into_wall"));
+    }
 }
