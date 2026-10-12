@@ -31,6 +31,7 @@ public class DeathCategoryResolver {
             case "in_wall"                                     -> "suffocation";
             case "cactus"                                      -> "cactus";
             case "sonic_boom"                                  -> "sonic_boom";
+            case "fly_into_wall"                               -> "kinetic";
             case "starve"                                      -> "starvation";
             case "wither"                                      -> "wither_effect";
             case "sweet_berry_bush"                            -> "unknown";
@@ -51,6 +52,7 @@ public class DeathCategoryResolver {
             case "SUFFOCATION"                           -> "suffocation";
             case "CONTACT"                               -> "cactus";
             case "SONIC_BOOM"                            -> "sonic_boom";
+            case "FLY_INTO_WALL"                         -> "kinetic";
             case "STARVATION"                            -> "starvation";
             case "POISON"                                -> "poison";
             case "WITHER"                                -> "wither_effect";

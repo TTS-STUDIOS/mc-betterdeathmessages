@@ -91,6 +91,10 @@ messages:
     - "<green>{player}</green> <gray>tried to hug a cactus. The cactus won.</gray>"
     - "<green>{player}</green> <gray>discovered cactus is not a pillow</gray>"
     - "<green>{player}</green> <gray>ran into a cactus at</gray> <aqua>{x}, {y}, {z}</aqua> <gray>and didn't survive</gray>"
+  kinetic:
+    - "<red>{player}</red> <gray>flew straight into a wall</gray>"
+    - "<red>{player}</red> <gray>forgot to brake and hit the wall with an elytra</gray>"
+    - "<red>{player}</red> <gray>glided too fast towards</gray> <aqua>{x}, {y}, {z}</aqua>"
   sonic_boom:
     - "<dark_gray>☠ {player}</dark_gray> <gray>was shredded by a sonic boom from the Warden</gray>"
     - "<dark_gray>☠ {player}</dark_gray> <gray>underestimated what lurks below {dimension}</gray>"

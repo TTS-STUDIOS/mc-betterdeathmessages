@@ -92,6 +92,10 @@ messages:
     - "<green>{player}</green> <gray>intentó abrazar un cactus. Ganó el cactus.</gray>"
     - "<green>{player}</green> <gray>descubrió que el cactus no es una almohada</gray>"
     - "<green>{player}</green> <gray>chocó contra un cactus en</gray> <aqua>{x}, {y}, {z}</aqua> <gray>y no lo contó</gray>"
+  kinetic:
+    - "<red>{player}</red> <gray>se estampó contra la pared volando</gray>"
+    - "<red>{player}</red> <gray>no frenó a tiempo y se comió la pared con el élitro</gray>"
+    - "<red>{player}</red> <gray>planeó demasiado rápido hacia</gray> <aqua>{x}, {y}, {z}</aqua>"
   sonic_boom:
     - "<dark_gray>☠ {player}</dark_gray> <gray>fue desgarrado por el sonic boom del Warden</gray>"
     - "<dark_gray>☠ {player}</dark_gray> <gray>subestimó lo que acecha bajo {dimension}</gray>"
