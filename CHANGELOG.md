@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.4.2] — retenida (sin fecha hasta publicarla)
+## [1.4.2] — 2026-10-14
 
 ### Added
 - **Kills the killer did not land himself are credited to him**: an end crystal or TNT he set off, a fall or
