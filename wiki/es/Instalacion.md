@@ -26,7 +26,7 @@ Compila desde el código fuente o descarga `betterdeathmessages-1.0.0.jar` desde
 
 ```bash
 # Para compilar desde el código fuente:
-git clone https://github.com/TheCuouz/mc-betterdeathmessages.git
+git clone https://github.com/TTS-STUDIOS/mc-betterdeathmessages.git
 cd mc-betterdeathmessages
 mvn clean package
 # El JAR estará en target/betterdeathmessages-1.0.0.jar

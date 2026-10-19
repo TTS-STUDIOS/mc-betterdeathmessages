@@ -27,7 +27,7 @@
 
 > **Narrative death messages for Paper and Spigot, 1.17 to 26.x** — Replaces vanilla one-liners with a configurable library of MiniMessage templates split by cause (fall, lava, drown, void, pvp, per-mob, and many more), plus hover stats, daily broadcasts, persistent stats, and Last Words.
 
-> 🏷️ Brought to you by **[TTS-Studio](https://github.com/TheCuouz)** — part of the unified TTS-Studio plugin suite.
+> 🏷️ Brought to you by **[TTS-Studio](https://github.com/TTS-STUDIOS)** — part of the unified TTS-Studio plugin suite.
 
 ---
 

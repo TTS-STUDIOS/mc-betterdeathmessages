@@ -26,7 +26,7 @@ Build from source or grab `betterdeathmessages-1.0.0.jar` from the official rele
 
 ```bash
 # To build from source:
-git clone https://github.com/TheCuouz/mc-betterdeathmessages.git
+git clone https://github.com/TTS-STUDIOS/mc-betterdeathmessages.git
 cd mc-betterdeathmessages
 mvn clean package
 # JAR lands in target/betterdeathmessages-1.0.0.jar
