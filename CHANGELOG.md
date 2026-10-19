@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.3] — 2026-10-19
+
+### Changed
+- The plugin's author now shows as TTS-Studio (plugin list and PlaceholderAPI). Nothing else changes.
+
 ## [1.4.2] — 2026-10-14
 
 ### Added
