@@ -5,7 +5,6 @@ import com.ttsstudio.betterdeathmessages.cfg.MessageManager;
 import com.ttsstudio.betterdeathmessages.command.BdmCommand;
 import com.ttsstudio.betterdeathmessages.command.DeathsCommand;
 import com.ttsstudio.betterdeathmessages.integration.PapiHook;
-import com.ttsstudio.betterdeathmessages.integration.VaultHook;
 import com.ttsstudio.betterdeathmessages.lastwords.LastWordsCache;
 import com.ttsstudio.betterdeathmessages.listener.ChatCaptureListener;
 import com.ttsstudio.betterdeathmessages.listener.DeathListener;
@@ -34,8 +33,6 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
     private LastWordsCache lastWordsCache;
     private KillStreakBroadcaster killStreakBroadcaster;
     private FirstBloodTracker firstBloodTracker;
-    private VaultHook vaultHook;
-    private boolean vaultAvailable = false;
 
     @Override
     public void onEnable() {
@@ -44,9 +41,6 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
 
         configManager = new ConfigManager(this);
         configManager.reload();
-
-        vaultHook = new VaultHook();
-        vaultAvailable = vaultHook.setup();
 
         messageManager = new MessageManager(this, configManager);
         messageManager.reload();
@@ -157,6 +151,4 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
     public LastWordsCache getLastWordsCache()   { return lastWordsCache; }
     public KillStreakBroadcaster getKillStreakBroadcaster() { return killStreakBroadcaster; }
     public FirstBloodTracker getFirstBloodTracker()         { return firstBloodTracker; }
-    public VaultHook getVaultHook()   { return vaultHook; }
-    public boolean isVaultAvailable() { return vaultAvailable; }
 }

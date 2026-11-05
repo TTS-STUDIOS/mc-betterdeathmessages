@@ -6,7 +6,7 @@
 
     <groupId>com.ttsstudio</groupId>
     <artifactId>betterdeathmessages</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -58,12 +58,6 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.ttsstudio</groupId>

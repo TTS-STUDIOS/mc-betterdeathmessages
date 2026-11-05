@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.4] — 2026-11-05
+
+### Read before updating
+- **`{inventory_value}` is now a real value.** It used to show how many items the victim carried. It now adds up the price of each item from the new `inventory-value` section of `config.yml` (diamonds, netherite, gear, golden apples, totems, elytra...). Items not on the list count as `default-price`, 0 out of the box. Your current `config.yml` keeps working: the bundled prices apply until you add the section to change them.
+- **Vault is no longer used.** The token works on every server, with or without Vault or an economy plugin.
+
 ## [1.4.3] — 2026-10-19
 
 ### Changed

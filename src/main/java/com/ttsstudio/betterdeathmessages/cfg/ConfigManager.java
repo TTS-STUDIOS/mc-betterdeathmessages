@@ -16,9 +16,21 @@ public final class ConfigManager {
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
         this.cfg = plugin.getConfig();
+        this.inventoryWorth = null;
     }
 
     public FileConfiguration raw() { return cfg; }
+
+    private com.ttsstudio.betterdeathmessages.service.InventoryWorth inventoryWorth;
+
+    /** Item prices for {inventory_value}; rebuilt on every reload. */
+    public com.ttsstudio.betterdeathmessages.service.InventoryWorth inventoryWorth() {
+        if (inventoryWorth == null) {
+            inventoryWorth = com.ttsstudio.betterdeathmessages.service.InventoryWorth.from(
+                cfg.getConfigurationSection("inventory-value"));
+        }
+        return inventoryWorth;
+    }
 
     /** Active locale (ISO-639-1 two-letter code, lowercase). Default "en". */
     public String language() { return cfg.getString("language", "en").toLowerCase(); }

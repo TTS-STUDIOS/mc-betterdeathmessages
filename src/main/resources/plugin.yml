@@ -4,7 +4,7 @@ main: com.ttsstudio.betterdeathmessages.BetterDeathMessagesPlugin
 api-version: "1.17"
 description: "Narrative death messages with hover stats and global broadcasts"
 authors: [TTS-Studio]
-softdepend: [PlaceholderAPI, Vault]
+softdepend: [PlaceholderAPI]
 
 commands:
   deaths:

@@ -106,9 +106,8 @@ public class DeathListener implements Listener {
             default       -> victim.getWorld().getName().toLowerCase();
         };
 
-        double inventoryValue = plugin.isVaultAvailable()
-            ? plugin.getVaultHook().estimateInventoryValue(victim.getInventory().getContents())
-            : 0.0;
+        double inventoryValue = plugin.getConfigManager().inventoryWorth()
+            .valueOf(victim.getInventory().getContents());
 
         DeathContext ctx = new DeathContext(
             victim,

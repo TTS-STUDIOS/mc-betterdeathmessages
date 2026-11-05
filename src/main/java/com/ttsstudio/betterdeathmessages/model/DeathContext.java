@@ -18,6 +18,6 @@ public record DeathContext(
     String biome,
     Location deathLocation,
     String dimension,
-    double inventoryValue,  // 0.0 if Vault unavailable
+    double inventoryValue,  // priced from config.yml#inventory-value
     @Nullable String indirectCause // "explosion", "fall"… when the killer was credited without landing the blow
 ) {}

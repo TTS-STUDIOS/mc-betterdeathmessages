@@ -70,6 +70,47 @@ broadcast:
   radius: -1
 
 # ============================================================
+# INVENTORY VALUE  (the {inventory_value} token)
+# ============================================================
+# What the victim was carrying, added up from the price of each item.
+# Items not listed are worth default-price each. Material names as in
+# Minecraft (DIAMOND, NETHERITE_SWORD...). Vault is not needed.
+inventory-value:
+  default-price: 0
+  prices:
+    IRON_INGOT: 10
+    GOLD_INGOT: 10
+    IRON_BLOCK: 90
+    GOLD_BLOCK: 90
+    EMERALD: 50
+    EMERALD_BLOCK: 450
+    DIAMOND: 100
+    DIAMOND_BLOCK: 900
+    NETHERITE_INGOT: 500
+    NETHERITE_BLOCK: 4500
+    DIAMOND_SWORD: 200
+    DIAMOND_PICKAXE: 300
+    DIAMOND_AXE: 300
+    DIAMOND_SHOVEL: 100
+    DIAMOND_HELMET: 500
+    DIAMOND_CHESTPLATE: 800
+    DIAMOND_LEGGINGS: 700
+    DIAMOND_BOOTS: 400
+    NETHERITE_SWORD: 700
+    NETHERITE_PICKAXE: 800
+    NETHERITE_AXE: 800
+    NETHERITE_SHOVEL: 600
+    NETHERITE_HELMET: 1000
+    NETHERITE_CHESTPLATE: 1300
+    NETHERITE_LEGGINGS: 1200
+    NETHERITE_BOOTS: 900
+    GOLDEN_APPLE: 80
+    ENCHANTED_GOLDEN_APPLE: 1000
+    TOTEM_OF_UNDYING: 500
+    ELYTRA: 2000
+    ENDER_PEARL: 5
+
+# ============================================================
 # DEATH SOUND
 # ============================================================
 # Plays a sound to nearby players when someone dies.
