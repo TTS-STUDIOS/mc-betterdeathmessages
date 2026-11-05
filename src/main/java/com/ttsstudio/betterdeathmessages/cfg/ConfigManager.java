@@ -33,7 +33,7 @@ public final class ConfigManager {
     }
 
     /** Active locale (ISO-639-1 two-letter code, lowercase). Default "en". */
-    public String language() { return cfg.getString("language", "en").toLowerCase(); }
+    public String language() { return cfg.getString("language", "en").toLowerCase(java.util.Locale.ROOT); }
 
     public boolean lastWordsEnabled()  { return cfg.getBoolean("last-words.enabled", true); }
     public long    lastWordsCacheSeconds() { return Math.max(1L, cfg.getLong("last-words.cache-seconds", 60L)); }

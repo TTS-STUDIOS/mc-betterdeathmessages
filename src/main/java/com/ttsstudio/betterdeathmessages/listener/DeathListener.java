@@ -103,7 +103,7 @@ public class DeathListener implements Listener {
             case NETHER   -> "nether";
             case THE_END  -> "the_end";
             case NORMAL   -> "overworld";
-            default       -> victim.getWorld().getName().toLowerCase();
+            default       -> victim.getWorld().getName().toLowerCase(java.util.Locale.ROOT);
         };
 
         double inventoryValue = plugin.getConfigManager().inventoryWorth()
