@@ -48,7 +48,7 @@ public final class ConfigManager {
 
     public boolean killStreakEnabled() { return cfg.getBoolean("kill-streaks.enabled", true); }
     public java.util.List<Integer> killStreakThresholds() {
-        return cfg.getIntegerList("kill-streaks.thresholds");
+        return Sane.thresholds(cfg.getIntegerList("kill-streaks.thresholds"));
     }
     public boolean firstBloodEnabled() { return cfg.getBoolean("first-blood.enabled", true); }
 
@@ -57,7 +57,7 @@ public final class ConfigManager {
 
     public boolean deathSoundEnabled() { return cfg.getBoolean("death-sound.enabled", true); }
     public String  deathSoundType()    { return cfg.getString("death-sound.sound", "ENTITY_PLAYER_DEATH"); }
-    public int     deathSoundRadius()  { return cfg.getInt("death-sound.radius", 50); }
-    public float   deathSoundVolume()  { return (float) cfg.getDouble("death-sound.volume", 1.0); }
-    public float   deathSoundPitch()   { return (float) cfg.getDouble("death-sound.pitch", 1.0); }
+    public int     deathSoundRadius()  { return Sane.soundRadius(cfg.getInt("death-sound.radius", 50)); }
+    public float   deathSoundVolume()  { return Sane.volume(cfg.getDouble("death-sound.volume", 1.0)); }
+    public float   deathSoundPitch()   { return Sane.pitch(cfg.getDouble("death-sound.pitch", 1.0)); }
 }

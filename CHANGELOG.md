@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Odd values in `config.yml` no longer misbehave: a negative or huge `death-sound.radius`, a zero/negative/NaN `death-sound.volume` or `pitch`, and kill-streak `thresholds` that are 0, negative or repeated are now corrected on load.
+
 ## [1.4.4] — 2026-11-05
 
 ### Read before updating
