@@ -62,6 +62,13 @@ first-blood:
   enabled: true
 
 # ============================================================
+# DISABLED WORLDS
+# ============================================================
+# Worlds where the plugin does nothing: vanilla death message,
+# no stats, no death sound. World names, case does not matter.
+disabled-worlds: []
+
+# ============================================================
 # BROADCAST RADIUS
 # ============================================================
 # -1  = send death message to ALL players online (default).

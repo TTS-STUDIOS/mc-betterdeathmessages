@@ -1,6 +1,7 @@
 package com.ttsstudio.betterdeathmessages.listener;
 
 import com.ttsstudio.betterdeathmessages.BetterDeathMessagesPlugin;
+import com.ttsstudio.betterdeathmessages.cfg.WorldRules;
 import com.ttsstudio.betterdeathmessages.message.DeathCategoryResolver;
 import com.ttsstudio.betterdeathmessages.model.DeathContext;
 import com.ttsstudio.betterdeathmessages.model.PlayerDeathStats;
@@ -65,6 +66,8 @@ public class DeathListener implements Listener {
             Texts.deathMessage(event, null);
             return;
         }
+        // Worlds listed in disabled-worlds keep the vanilla message and are left out of stats and sounds
+        if (WorldRules.disabled(plugin.getConfigManager().disabledWorlds(), victim.getWorld().getName())) return;
         EntityDamageEvent lastDmg = victim.getLastDamageCause();
 
         Player playerKiller = null;
