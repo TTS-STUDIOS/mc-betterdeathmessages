@@ -13,6 +13,7 @@ import com.ttsstudio.betterdeathmessages.service.DeathStatsService;
 import com.ttsstudio.betterdeathmessages.tracker.FirstDeathTracker;
 import com.ttsstudio.betterdeathmessages.tracker.KillStreakBroadcaster;
 import com.ttsstudio.betterdeathmessages.tracker.FirstBloodTracker;
+import com.ttsstudio.betterdeathmessages.tracker.KillFarmGuard;
 import com.ttsstudio.sdk.PluginIdentity;
 import com.ttsstudio.sdk.compat.Chat;
 import com.ttsstudio.sdk.text.Texts;
@@ -33,6 +34,7 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
     private LastWordsCache lastWordsCache;
     private KillStreakBroadcaster killStreakBroadcaster;
     private FirstBloodTracker firstBloodTracker;
+    private volatile KillFarmGuard killFarmGuard;
 
     @Override
     public void onEnable() {
@@ -62,6 +64,7 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
             ? new KillStreakBroadcaster(java.util.List.of(3, 5, 10, 20))
             : new KillStreakBroadcaster(thresholds);
         firstBloodTracker = new FirstBloodTracker();
+        killFarmGuard = newFarmGuard();
 
         getServer().getPluginManager().registerEvents(new DeathListener(this), this);
         if (configManager.lastWordsEnabled()) {
@@ -121,6 +124,12 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
         killStreakBroadcaster = thresholds.isEmpty()
             ? new KillStreakBroadcaster(java.util.List.of(3, 5, 10, 20))
             : new KillStreakBroadcaster(thresholds);
+        killFarmGuard = newFarmGuard();
+    }
+
+    private KillFarmGuard newFarmGuard() {
+        return new KillFarmGuard(configManager.streakSameVictimMax(),
+            configManager.streakSameVictimWindowMs(), configManager.streakMinVictimAliveMs());
     }
 
     private int countDeathTemplates() {
@@ -151,4 +160,5 @@ public final class BetterDeathMessagesPlugin extends JavaPlugin {
     public LastWordsCache getLastWordsCache()   { return lastWordsCache; }
     public KillStreakBroadcaster getKillStreakBroadcaster() { return killStreakBroadcaster; }
     public FirstBloodTracker getFirstBloodTracker()         { return firstBloodTracker; }
+    public KillFarmGuard getKillFarmGuard()                 { return killFarmGuard; }
 }

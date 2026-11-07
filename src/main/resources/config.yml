@@ -52,6 +52,14 @@ first-death-of-day:
 kill-streaks:
   enabled: true
   thresholds: [3, 5, 10, 20]
+  # Anti-farming: kills that do not raise the streak (they still count as kills).
+  # Killing the same player more than max-kills times within window-seconds stops counting
+  # until that pair has a quiet window. 0 turns it off.
+  same-victim:
+    max-kills: 3
+    window-seconds: 600
+  # A victim who respawned or joined less than this many seconds ago does not count. 0 turns it off.
+  min-victim-alive-seconds: 10
 
 # ============================================================
 # FIRST BLOOD

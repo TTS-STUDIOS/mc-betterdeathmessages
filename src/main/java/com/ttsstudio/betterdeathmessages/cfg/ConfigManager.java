@@ -52,6 +52,13 @@ public final class ConfigManager {
     public java.util.List<Integer> killStreakThresholds() {
         return Sane.thresholds(cfg.getIntegerList("kill-streaks.thresholds"));
     }
+    public int  streakSameVictimMax() { return Math.max(0, cfg.getInt("kill-streaks.same-victim.max-kills", 3)); }
+    public long streakSameVictimWindowMs() {
+        return Math.max(1L, cfg.getLong("kill-streaks.same-victim.window-seconds", 600L)) * 1000L;
+    }
+    public long streakMinVictimAliveMs() {
+        return Math.max(0L, cfg.getLong("kill-streaks.min-victim-alive-seconds", 10L)) * 1000L;
+    }
     public boolean firstBloodEnabled() { return cfg.getBoolean("first-blood.enabled", true); }
 
     /** -1 = global broadcast, >0 = radius in blocks within same world. */

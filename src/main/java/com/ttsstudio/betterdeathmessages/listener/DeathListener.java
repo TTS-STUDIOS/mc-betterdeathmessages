@@ -24,6 +24,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -55,6 +58,21 @@ public class DeathListener implements Listener {
             plugin.getLogger().log(Level.WARNING,
                 "Failed to build custom death message; falling back to default.", t);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onRespawn(PlayerRespawnEvent event) {
+        plugin.getKillFarmGuard().spawned(event.getPlayer().getUniqueId(), System.currentTimeMillis());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onJoin(PlayerJoinEvent event) {
+        plugin.getKillFarmGuard().spawned(event.getPlayer().getUniqueId(), System.currentTimeMillis());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onQuit(PlayerQuitEvent event) {
+        plugin.getKillFarmGuard().forget(event.getPlayer().getUniqueId());
     }
 
     private void handleDeath(PlayerDeathEvent event) {
@@ -182,6 +200,9 @@ public class DeathListener implements Listener {
         }
 
         final Player finalKiller   = playerKiller;
+        // Decided here, in event order, so two deaths in the same tick see each other
+        final boolean raisesStreak = playerKiller != null && plugin.getKillFarmGuard()
+            .counts(playerKiller.getUniqueId(), victim.getUniqueId(), System.currentTimeMillis());
         final String finalCategory = category;
         final UUID victimUuid      = victim.getUniqueId();
         final String victimName    = victim.getName();
@@ -189,11 +210,11 @@ public class DeathListener implements Listener {
             plugin.getDeathStatsService().record(victimUuid, finalCategory);
 
             if (finalKiller != null) {
-                plugin.getDeathStatsService().recordKill(finalKiller.getUniqueId());
+                plugin.getDeathStatsService().recordKill(finalKiller.getUniqueId(), raisesStreak);
                 int streak = plugin.getDeathStatsService().get(finalKiller.getUniqueId()).currentKillStreak;
 
                 // Kill streak milestone broadcast
-                if (plugin.getConfigManager().killStreakEnabled()
+                if (raisesStreak && plugin.getConfigManager().killStreakEnabled()
                         && plugin.getKillStreakBroadcaster().isMilestone(streak)) {
                     String streakKey = String.valueOf(streak);
                     String rawTemplate = plugin.getMessages().getTemplates()

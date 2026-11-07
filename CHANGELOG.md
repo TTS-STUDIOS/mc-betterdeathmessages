@@ -6,6 +6,7 @@
 - `disabled-worlds` in `config.yml`: list the worlds (a minigame, a build world) where deaths keep the vanilla message and are not counted in stats or sounds. Empty by default.
 
 ### Fixed
+- Kill streaks can no longer be farmed. Killing the same player again and again (an alt, a friend) stops raising the streak after 3 kills in 10 minutes, and a player killed less than 10 seconds after respawning or joining does not count either. These kills still add to total kills. Tune or turn off both in `kill-streaks.same-victim` and `kill-streaks.min-victim-alive-seconds`.
 - Odd values in `config.yml` no longer misbehave: a negative or huge `death-sound.radius`, a zero/negative/NaN `death-sound.volume` or `pitch`, and kill-streak `thresholds` that are 0, negative or repeated are now corrected on load.
 
 ## [1.4.4] — 2026-11-05

@@ -66,6 +66,18 @@ class DeathStatsServiceTest {
     }
 
     @Test
+    void farmedKill_countsAsKillButNotStreak() {
+        DeathStatsService svc = service();
+        UUID uuid = UUID.randomUUID();
+        svc.recordKill(uuid, true);
+        svc.recordKill(uuid, false);
+        PlayerDeathStats s = svc.get(uuid);
+        assertEquals(2, s.totalKills);
+        assertEquals(1, s.currentKillStreak);
+        assertEquals(1, s.longestKillStreak);
+    }
+
+    @Test
     void recordDeath_resetsCurrentKillStreak() {
         DeathStatsService svc = service();
         UUID uuid = UUID.randomUUID();
