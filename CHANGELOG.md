@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Citizens NPCs that die (a Sentinel guard, a sparring bot) no longer get a death message, the "first to die today" line or stats, and killing one no longer counts as a player kill. With recent Citizens the NPC had already lost its marker when the death was handled.
+
 ## [1.4.5] — 2026-11-08
 
 ### Added

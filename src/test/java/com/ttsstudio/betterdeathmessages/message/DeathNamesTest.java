@@ -190,6 +190,14 @@ class DeathNamesTest {
     }
 
     @Test
+    void aDyingNpcThatLostItsMetadataIsStillAnNpc() {
+        // Citizens 2.0.42 + Sentinel: at MONITOR the dying bot no longer has "NPC", but it is not an online player.
+        Player bot = Fakes.player("CIT-213f728679a7", false, false, null);
+        assertTrue(DeathListener.isNpc(bot));
+        assertNull(DeathListener.creditedKiller(Fakes.player("Steve", false, bot)));
+    }
+
+    @Test
     void theSilentMetadataKeyIsStable() {
         assertEquals("bdm-silent", DeathListener.SILENT);
     }
