@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.4.5] — 2026-11-08
+
 ### Added
 - `disabled-worlds` in `config.yml`: list the worlds (a minigame, a build world) where deaths keep the vanilla message and are not counted in stats or sounds. Empty by default.
 
