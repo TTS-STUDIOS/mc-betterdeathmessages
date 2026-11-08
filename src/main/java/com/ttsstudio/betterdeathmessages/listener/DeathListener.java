@@ -1,6 +1,7 @@
 package com.ttsstudio.betterdeathmessages.listener;
 
 import com.ttsstudio.betterdeathmessages.BetterDeathMessagesPlugin;
+import com.ttsstudio.betterdeathmessages.cfg.WorldRules;
 import com.ttsstudio.betterdeathmessages.message.DeathCategoryResolver;
 import com.ttsstudio.betterdeathmessages.model.DeathContext;
 import com.ttsstudio.betterdeathmessages.model.PlayerDeathStats;
@@ -23,6 +24,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -56,6 +60,21 @@ public class DeathListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onRespawn(PlayerRespawnEvent event) {
+        plugin.getKillFarmGuard().spawned(event.getPlayer().getUniqueId(), System.currentTimeMillis());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onJoin(PlayerJoinEvent event) {
+        plugin.getKillFarmGuard().spawned(event.getPlayer().getUniqueId(), System.currentTimeMillis());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onQuit(PlayerQuitEvent event) {
+        plugin.getKillFarmGuard().forget(event.getPlayer().getUniqueId());
+    }
+
     private void handleDeath(PlayerDeathEvent event) {
         Player victim = event.getEntity();
         // A Citizens NPC (a combat-logger stand-in, a guard) is not a player: no line, no stats.
@@ -65,6 +84,8 @@ public class DeathListener implements Listener {
             Texts.deathMessage(event, null);
             return;
         }
+        // Worlds listed in disabled-worlds keep the vanilla message and are left out of stats and sounds
+        if (WorldRules.disabled(plugin.getConfigManager().disabledWorlds(), victim.getWorld().getName())) return;
         EntityDamageEvent lastDmg = victim.getLastDamageCause();
 
         Player playerKiller = null;
@@ -179,6 +200,9 @@ public class DeathListener implements Listener {
         }
 
         final Player finalKiller   = playerKiller;
+        // Decided here, in event order, so two deaths in the same tick see each other
+        final boolean raisesStreak = playerKiller != null && plugin.getKillFarmGuard()
+            .counts(playerKiller.getUniqueId(), victim.getUniqueId(), System.currentTimeMillis());
         final String finalCategory = category;
         final UUID victimUuid      = victim.getUniqueId();
         final String victimName    = victim.getName();
@@ -186,11 +210,11 @@ public class DeathListener implements Listener {
             plugin.getDeathStatsService().record(victimUuid, finalCategory);
 
             if (finalKiller != null) {
-                plugin.getDeathStatsService().recordKill(finalKiller.getUniqueId());
+                plugin.getDeathStatsService().recordKill(finalKiller.getUniqueId(), raisesStreak);
                 int streak = plugin.getDeathStatsService().get(finalKiller.getUniqueId()).currentKillStreak;
 
                 // Kill streak milestone broadcast
-                if (plugin.getConfigManager().killStreakEnabled()
+                if (raisesStreak && plugin.getConfigManager().killStreakEnabled()
                         && plugin.getKillStreakBroadcaster().isMilestone(streak)) {
                     String streakKey = String.valueOf(streak);
                     String rawTemplate = plugin.getMessages().getTemplates()

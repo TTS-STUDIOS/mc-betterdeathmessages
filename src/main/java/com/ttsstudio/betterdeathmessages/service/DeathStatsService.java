@@ -37,8 +37,14 @@ public class DeathStatsService {
     }
 
     public synchronized void recordKill(UUID uuid) {
+        recordKill(uuid, true);
+    }
+
+    /** A farmed kill still counts as a kill, but leaves the streak where it was. */
+    public synchronized void recordKill(UUID uuid, boolean raisesStreak) {
         PlayerDeathStats s = get(uuid);
         s.totalKills++;
+        if (!raisesStreak) return;
         s.currentKillStreak++;
         if (s.currentKillStreak > s.longestKillStreak) {
             s.longestKillStreak = s.currentKillStreak;
