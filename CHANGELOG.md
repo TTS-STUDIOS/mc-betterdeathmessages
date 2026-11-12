@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+- **`chat-prefix`** in config.yml replaces the "◈ Deaths:" prefix of command replies with your network's own
+  (MiniMessage). Empty keeps the default. Built on tts-sdk 0.16.0.
+
 ### Fixed
 - Citizens NPCs that die (a Sentinel guard, a sparring bot) no longer get a death message, the "first to die today" line or stats, and killing one no longer counts as a player kill. With recent Citizens the NPC had already lost its marker when the death was handled.
 
