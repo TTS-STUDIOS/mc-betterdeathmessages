@@ -62,7 +62,7 @@
         <dependency>
             <groupId>com.ttsstudio</groupId>
             <artifactId>tts-sdk</artifactId>
-            <version>0.12.0</version>
+            <version>0.16.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

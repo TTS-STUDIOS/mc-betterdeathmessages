@@ -259,9 +259,13 @@ public class DeathListener implements Listener {
         }
     }
 
-    /** Citizens (and most NPC plugins) tag their entities with the "NPC" metadata. */
+    /**
+     * Citizens (and most NPC plugins) tag their entities with the "NPC" metadata, but a dying Citizens NPC (a Sentinel
+     * guard) has lost it by the time the death event reaches us. An NPC player is never in the online list either.
+     */
     public static boolean isNpc(Entity entity) {
-        return entity != null && entity.hasMetadata("NPC");
+        if (entity == null) return false;
+        return entity.hasMetadata("NPC") || (entity instanceof Player p && !p.isOnline());
     }
 
     /** The player the server credits with this death (getKiller), when it is someone else and a real player. */

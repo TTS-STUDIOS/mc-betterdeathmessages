@@ -48,7 +48,13 @@ public final class Fakes {
     }
 
     public static Player player(String name, boolean npc, Player killer) {
+        return player(name, npc, !npc, killer);
+    }
+
+    /** online = in the server's player list; a Citizens NPC never is, with or without its metadata. */
+    public static Player player(String name, boolean npc, boolean online, Player killer) {
         Map<String, Object> a = new HashMap<>();
+        if (online) a.put("isOnline", true);
         a.put("getName", name);
         a.put("getUniqueId", UUID.nameUUIDFromBytes(name.getBytes()));
         a.put("getType", EntityType.PLAYER);

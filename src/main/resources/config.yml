@@ -8,6 +8,10 @@ config-version: 3
 # lang/<code>.yml files in plugins/BetterDeathMessages/lang/.
 language: en
 
+# Chat prefix in front of command replies (MiniMessage). Empty keeps the built-in
+# "◈ Deaths:". Example for a network style: "<dark_red>☠ Muertes <dark_gray>»"
+chat-prefix: ""
+
 # ============================================================
 # LAST WORDS  (v1.1.0)
 # ============================================================
