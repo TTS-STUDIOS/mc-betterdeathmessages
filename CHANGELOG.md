@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.4.6] — 2026-11-15
+
 ### Added
 - **`chat-prefix`** in config.yml replaces the "◈ Deaths:" prefix of command replies with your network's own
   (MiniMessage). Empty keeps the default. Built on tts-sdk 0.16.0.
